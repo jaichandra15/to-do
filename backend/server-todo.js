@@ -1,9 +1,9 @@
 const express=require('express')
 const app=express()
 const {createtodo,updatetodo}=require('./types')
-const {todo}=require('./db.')
+const {todo}=require('./db')
 app.use(express.json())
-app.post("/todo",function (req,res){
+app.post("/todo",async function (req,res){
     const request=req.body;
     const parsed=createtodo.safeParse(request)
     if(!parsed.success){
@@ -12,40 +12,39 @@ app.post("/todo",function (req,res){
         })
         return
     }
-    todo.create(
+    await todo.create(
         {title:request.title,
             description:request.description,
             completed:false
         }
-    ).then(()=>{
+    )
         res.json({
             msg:"Todo created"
         })
-    })
 
 
 
 })
 app.get("/todos",async function (req,res){
     const todos=await todo.find({})
-    console.log(todos)
+    res.json(todos)
 })
 app.put("/complete",async function (req,res){
     const request=req.body;
-    const parsed=createtodo.safeParse(request)
+    const parsed=updatetodo.safeParse(request)
     if(!parsed.success){
         res.status(411).json({
             msg:"sent wrong inputs"
         })
         return
     }
-    await todo.updaet({
-        _id:request.id
+    await todo.updateOne({
+        _id:request._id
     },{
         completed:true
     })
     res.json({
-        msg:"Update-done"
+        msg:"Todo marked as completed"
     })
 
     

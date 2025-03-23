@@ -4,7 +4,7 @@ const createtodo=zod.object({
     description:zod.string()
 })
 const updatetodo=zod.object({
-    id:zod.string()
+    _id:zod.string()
 })
 
 module.exports={
